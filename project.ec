@@ -148,3 +148,83 @@ proof.
   smt().   
   smt().
 qed.
+
+(* helper lemma from lab *)
+
+lemma count_iota_0 : forall n,
+count (transpose (=) n) (iota_ 0 n) = 0.
+    proof.
+    move => n.
+      apply count_eq0. rewrite hasPn. 
+    move => x.
+    smt(mem_iota).
+qed.
+
+lemma count_iota : forall n j,
+n=size(iota_ 0 n) =>  0<=j< n =>  (count (fun (i : int) => j = n-i-1) (iota_ 0 n)) = 1.
+    proof.
+    elim/natind.
+    move => n Hn j Hs Hj. smt(size_iota).
+    move => n Hn HI j Hs Hj.
+      rewrite iotaSr. assumption. simplify.  rewrite -cats1. rewrite count_cat. 
+      rewrite /count. case (j=0) => H. rewrite H.
+      simplify.  
+      have ? : (n+1-n-1=0). smt().
+      rewrite H0. simplify.
+      have ? :(fun i => i = n) =(fun i => 0=n+1-i-1).  smt(). 
+      rewrite -H1. rewrite count_iota_0. smt(). 
+      have ? : (n+1-n-1=0). smt().
+      rewrite H0 H. simplify.    
+      have ? :(fun i => j-1 = n-i-1) =(fun i => j=n+1-i-1).  smt(). 
+      rewrite -H1. rewrite HI. smt(size_iota). smt(). smt(). 
+  qed.
+
+lemma subtract (x y z : real) : x <= y /\ y <= x /\ z <= 2%r /\ 2%r <= z => x - y / z = x/2%r.
+proof.
+  smt().
+qed.
+
+  
+lemma dp n j: 0<= j < n => aequiv
+ [ [eps & 0%r]
+  M.aboveT ~ M.aboveT :  (adjacent_e db{1} db{2} j /\ n = size db{1} /\ ={t}) ==> res{2} = res{1} ].
+proof.
+  move => H.
+  proc.
+
+  seq 3 3 :  (adjacent_e db{1} db{2} j /\ ={s, i, r, t} /\
+            s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ n = size db{1}). 
+  toequiv; auto.
+
+  (* cost of coupling noisy threshold is epsilon/2 *)
+  seq 1 1 : (adjacent_e db{1} db{2} j /\ ={s, i, r, t, nT} /\
+            s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ n = size db{1}) <[ (eps/2%r) & 0%r ]>.
+  lap 0 1.
+  smt(ge0_eps).
+
+
+  awhile  [ (fun x => if j=n-x-1 then eps/2%r else 0%r ) & (fun _ => 0%r) ] n [n -i-1] 
+    (adjacent_e db{1} db{2} j /\ ={i, r} /\ 0 <= i{1} <= size db{1} /\ n=size db{1} /\
+      (i{1}=j => `|(nth 0 db{1} i{1})  - (nth 0 db{2} i{2}) | <= 1 /\
+     eq_in_range db{1} db{2} (i{1}+1) (size db{1} - 1)) /\
+        0<=  size db{1});  first 4 try (auto; progress;smt(ge0_eps)).
+  rewrite subtract.
+  smt().
+  rewrite -big_mkcond big_const.
+  rewrite count_iota.
+  smt(size_iota).
+  smt(size_iota).
+  smt(iter1).
+  rewrite sumr_const intmulr.
+  smt().
+  move => k.
+  have H1: (j <> n - k - 1)\/ (j = n - k - 1).
+  smt().
+  elim H1 => [same|different].
+  wp.
+  lap 0 0. 
+  smt().
+  progress.
+  admit.    
+  progress; first 6 try (smt()).    
+qed.
