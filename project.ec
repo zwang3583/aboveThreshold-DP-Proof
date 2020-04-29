@@ -66,9 +66,9 @@ module M = {
     i <- 0;
     r <- -1;
     (* noisy threshold*)
-    nT <$ lap (eps/4%r) t;
+    nT <$ lap (eps/2%r) t;
     while (i < size db) {
-      s <$ lap (eps/2%r) (evalQ i db);
+      s <$ lap (eps/4%r) (evalQ i db);
       if (nT < s /\ r = -1){
         r <- i;
       }
@@ -99,7 +99,7 @@ proof.
 qed.    
 
 lemma dp_composition n : 0<=n => aequiv
- [ [(eps/4%r + n%r*(eps/2%r)) & 0%r]
+ [ [(eps/2%r + n%r*(eps/4%r)) & 0%r]
   M.aboveT ~ M.aboveT :  (adjacent db{1} db{2}  /\ n = size db{1} /\ ={t}) ==> res{2} = res{1} ].
 proof.
   move => H.
@@ -113,14 +113,15 @@ proof.
             s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ 0<=n /\ n = size db{1}). 
   toequiv; auto.
   seq 1 1 : (adjacent db{1} db{2} /\ ={s, i, r, t, nT} /\
-            s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ 0<=n /\ n = size db{1}) <[ (eps/4%r) & 0%r ]>.
+            s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ 0<=n /\ n = size db{1}) <[ (eps/2%r) & 0%r ]>.
   lap 0 1.
+
 (*
    instead, we use the approximate while rule which takes as additional parameters
    two functions describing how the privacy budget change at each iteration, and how 
    the number of iterations decreases.
-*)
-  awhile  [ (fun _ => eps/2%r) & (fun _ => 0%r) ] n [n-i-1] 
+  *)
+  awhile  [ (fun _ => eps/4%r) & (fun _ => 0%r) ] n [n-i-1] 
      (adjacent db{1} db{2} /\ ={i, r, t, nT} /\ 0 <= i{1} <= n /\
      (! ={s} => `|s{1} - s{2}| <= 1 /\ eq_in_range db{1} db{2} i{1} (n - 1)) /\
        0<=n /\ n = size db{1}); first 3 try smt(ge0_eps).
