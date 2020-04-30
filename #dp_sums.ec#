@@ -185,11 +185,8 @@ lemma dummy_sum n : 0<=n => aequiv [ [  (eps *n%r) & 0%r]
     (adjacent ls{1} ls{2} /\ ={i, output} /\ 0 <= i{1} <= n /\
      (! ={s} => `|s{1} - s{2}| <= 1 /\
      eq_in_range ls{1} ls{2} i{1} (n - 1)) /\
-     0<= n /\ n = size ls{1}).
-       auto; progress;smt(ge0_eps).
-       progress.
-       auto; smt(ge0_eps); smt(ge0_eps).
-   smt(ge0_eps).
+     0<= n /\ n = size ls{1});
+     first 3 try (auto; progress;smt(ge0_eps)).
      smt(bigops_help).
      rewrite sumr_const intmulr;auto.
      move => v.
@@ -295,7 +292,13 @@ lemma noisy_sum n j : 0<= j < n => aequiv [ [ eps & 0%r]
       (i{1}=j =>
     `|(nth 0 ls{1} i{1})  - (nth 0 ls{2} i{2}) | <= 1 /\
      eq_in_range ls{1} ls{2} (i{1}+1) (size ls{1} - 1)) /\
-        0<=  size ls{1});  first 4 try (auto; progress;smt(ge0_eps)).
+        0<=  size ls{1}).
+        (*first 4 try (auto; progress;smt(ge0_eps)).*)
+smt.
+smt.
+        progress.
+        smt.
+   
        search pred1. search iota_. rewrite /bigi. 
        rewrite -big_mkcond. apply bigi_eps => //. rewrite sumr_const intmulr; smt().
       move => k.

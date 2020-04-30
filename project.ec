@@ -132,9 +132,10 @@ proof.
   rewrite mult_comm.
   rewrite sumr_const count_predT size_range max_ler.
   smt().
-  rewrite intmulr; auto.   
-  rewrite sumr_const intmulr; auto.
-  move => v. 
+  rewrite intmulr; auto.
+  rewrite sumr_const intmulr; trivial.
+  move => k.
+   
   wp.
   lap 0 1. 
   progress.
@@ -201,8 +202,8 @@ proof.
   seq 1 1 : (adjacent_e db{1} db{2} j /\ ={s, i, r, t, nT} /\
             s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ n = size db{1}) <[ (eps/2%r) & 0%r ]>.
   lap 0 1.
-  smt(ge0_eps).
 
+(* ----------------more stuff here----------------*)
 
   awhile  [ (fun x => if j=n-x-1 then eps/2%r else 0%r ) & (fun _ => 0%r) ] n [n -i-1] 
     (adjacent_e db{1} db{2} j /\ ={i, r} /\ 0 <= i{1} <= size db{1} /\ n=size db{1} /\
