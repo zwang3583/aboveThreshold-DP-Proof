@@ -140,14 +140,6 @@ proof.
   lap 0 1. 
   progress.
   smt(one_sens).
-  progress.
-  smt().
-  smt().
-  smt().
-  smt().
-  smt().
-  smt().
-  smt().   
   smt().
 qed.
 
