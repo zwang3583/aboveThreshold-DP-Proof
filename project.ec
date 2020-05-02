@@ -191,9 +191,10 @@ proof.
   toequiv; auto.
 
   (* cost of coupling noisy threshold is epsilon/2 *)
-  seq 1 1 : (adjacent_e db{1} db{2} j /\ ={s, i, r, t, nT} /\
+  seq 1 1 : (adjacent_e db{1} db{2} j /\ ={s, i, r, t} /\ ={t} => nT{1} + 1 = nT{2} /\
             s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ n = size db{1}) <[ (eps/2%r) & 0%r ]>.
-  lap 0 1.
+  lap 1 1.
+
 
 (* ----------------more stuff here----------------*)
 
