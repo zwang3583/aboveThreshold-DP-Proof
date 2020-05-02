@@ -195,6 +195,20 @@ proof.
             s{1} = 0 /\ i{1} = 0 /\ r{1} = -1 /\ n = size db{1}) <[ (eps/2%r) & 0%r ]>.
   lap 1 1.
 
+  pweq(r, r).
+  while true (size db - i).
+  auto.
+  smt.
+  skip.
+  smt.
+  while true (size db - i).
+  auto.
+  smt.
+  skip.
+  smt.
+  smt.
+  move => x.
+  
 
 (* ----------------more stuff here----------------*)
 
