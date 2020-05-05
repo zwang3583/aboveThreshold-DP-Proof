@@ -145,19 +145,18 @@ qed.
 
 (* modified algorithm *)
 module M1 = {
-  proc aboveT (db : int list, n: int, t : int) : int = {
+ proc aboveT (db : int list, n:int, t : int) : int = {
     var i : int;
     var nT : int;
-    var r : int;
     var s : int;
-    s <- 0;
+    var r: int;
+    s<-0;
     i <- 0;
     r <- n;
-    (* noisy threshold*)
     nT <$ lap (eps/2%r) t;
-    while (i < size db) {
+    while (i < n) {
       s <$ lap (eps/4%r) (evalQ i db);
-      if (nT < s /\ r = -1){
+      if (nT <= s /\ r = n){
         r <- i;
       }
       i <- i + 1;
@@ -166,11 +165,14 @@ module M1 = {
   }
 }.
 
+
+
   
-lemma dp : aequiv
+lemma dp N: 0<=N => aequiv
  [ [eps & 0%r]
   M1.aboveT ~ M1.aboveT :  (adjacent db{1} db{2} /\ ={n, t} /\ n{1} = size db{1}) ==> res{2} = res{1} ].
 proof.
+  move=>H.
   proc.
   seq 3 3 :  (adjacent db{1} db{2} /\ ={s, n, i, r, t} /\
             s{1} = 0 /\ i{1} = 0 /\ r{1} = n{1} /\ n{1} = size db{1}). 
@@ -181,22 +183,28 @@ proof.
             s{1} = 0 /\ i{1} = 0 /\ r{1} = n{1} /\ n{1} = size db{1}) <[ (eps/2%r) & 0%r ]>.
   lap 1 1.
 
+  (* pweq on r *)
   pweq(r, r).
-  while true (size db - i).
+  while true (n - i).
   auto.
   smt.
   skip.
   smt.
-  while true (size db - i).
+  while true (n - i).
   auto.
   smt.
   skip.
   smt.
   smt.
   move => r.
-  
 
-(* ----------------more stuff here----------------*)
 
-    
+(* -------------------- naive loop invariant ------------------*)
+  awhile  [ (fun _ => eps/2%r) & (fun _ => 0%r) ] N [N-i-1] 
+    (adjacent db{1} db{2} /\ ={i, r} /\ size db{1} = size db{2} /\
+    (nT{1}<=s{1} => r = s{1}) /\ (nT{2}<=s{2} => r = s{2})).
+  smt.
+  progress.
+
+   
 qed.
